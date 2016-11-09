@@ -1,0 +1,97 @@
+---
+# tasks file for aws
+
+- name: Remove exisiting EC2 key
+  ec2_key:
+   name: "wsoyinka-{{ proj_name }}-key"
+   region: "{{ region }}"
+   state: absent
+
+- name: Create new EC2 key
+  ec2_key:
+   name: "wsoyinka-{{ proj_name }}-key"
+   region: "{{ region }}"
+  register: ec2_key
+
+- debug: var=ec2_key.key.name
+
+- name: save private key file
+  copy: content="{{ ec2_key.key.private_key }}" dest="./wsoyinka-{{ proj_name }}-key.pem" mode=0600
+  when: ec2_key.changed
+
+
+- name: create a vpc
+  ec2_vpc:
+   region: "{{ region }}"
+   internet_gateway: True
+   resource_tags: { Name: wsoyinka-waveapp, env: wsoyinka-wave-prod }
+   cidr_block: 10.99.0.0/16
+   subnets:
+     - cidr: 10.99.0.0/24
+       resource_tags:
+         env: wsoyinka-wave-prod-subnet
+         tier: web
+   route_tables:
+     - subnets:
+       - 10.99.0.0/24
+       routes:
+        - dest: 0.0.0.0/0
+          gw: igw
+  register: vpc
+
+
+- name: web security group
+  ec2_group:
+    name: "wsoyinka-waveweb-sec-group"
+    description: "allow http, https and ssh access"
+    region: "{{ region }}"
+    vpc_id: "{{ vpc.vpc_id }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+  register: wavesecgroup
+
+
+
+- name: start the instances
+  ec2:
+    region: "{{ region }}"
+    image: "{{ ubuntu_image }}"
+    instance_type: "{{ instance_type }}"
+    assign_public_ip: True
+    vpc_subnet_id: "{{ vpc.subnets[0].id}}"
+    key_name: wsoyinka-{{ proj_name }}-key
+    group_id: "{{ wavesecgroup.group_id }}"
+    instance_tags: { Name: wsoyinka-waveapp, type: wsoyinka-waveweb-type, env: wsoyinka-wave-prod }
+    exact_count: "{{ count }}"
+    count_tag: { type: wsoyinka-waveweb-type }
+    wait: yes
+  register: ec2
+
+- name: save IP to inventory file
+  copy: content="[wave_webservers]{{'\n'}}{{ item.public_ip }}{{'\n'}}" dest=./inventory/hosts
+  with_items: "{{ ec2.instances }}"
+
+- name: Add instances to host group
+  add_host: hostname={{ item.public_ip }} group=wave_webservers
+  with_items: "{{ ec2.instances }}"
+
+
+- name: wait for ssh service to be reachable
+  wait_for: host={{ item.public_ip }} port=22 connect_timeout=10 search_regex=OpenSSH
+  with_items: "{{ ec2.instances }}"
+
+
+
+#- name: OR - even better use PCI compliant version view sensitive Wave Customer Data :-)
+#  debug: msg="https://{{ ansible_ec2_public_ipv4 }}"

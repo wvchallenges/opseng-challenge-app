@@ -1,0 +1,44 @@
+---
+# tasks file for deploy
+
+
+- name: checkout source code from github repo
+  git: repo={{ repo_url }} dest={{ proj_path }} accept_hostkey=yes version={{proj_version}}
+
+
+- name: install requirements.txt
+  pip:
+   requirements: "{{ proj_path }}/{{ reqs_file }}"
+   virtualenv: "{{ venv_path }}"
+
+
+- name: gunicorn config file
+  template: src=gunicorn_start.sh.j2 dest={{ proj_path }}/gunicorn_start.sh mode=0755
+
+
+- name: restart supervisor
+  service: name=supervisor state=started
+  become: True
+#  notify: restart nginx
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: True
+
+- name: start supervisor opseng-challenge
+  command: service supervisor restart
+  become: True
+
+#- name: start supervisor opseng-challenge
+#  supervisorctl: name=opseng-challenge state=started
+#  become: True
+
+#  service: name=supervisor state=started
+#  become: True
+
+
+#- name: Print New Web URL  v2
+#  debug: msg="http://{{ ansible_ec2_public_ipv4 }}"
+
+#- name: OR - even better use PCI compliant version view sensitive Wave Customer Data :-)
+#  debug: msg="https://{{ ansible_ec2_public_ipv4 }}"
