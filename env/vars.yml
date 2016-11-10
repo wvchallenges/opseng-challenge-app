@@ -16,8 +16,8 @@ locale: en_US.UTF-8
 conf_path: /etc/nginx/conf
 reqs_file: requirements.txt
 tls_enabled: False
-key_file: /etc/nginx/ssl/nginx.key
-cert_file: /etc/nginx/ssl/nginx.crt
+key_file: "/etc/nginx/ssl/{{ proj_name }}.key"
+cert_file: "/etc/nginx/ssl/{{ proj_name }}.crt"
 conf_file: /etc/nginx/sites-available/default
 server_name: "{{ ansible_ec2_public_ipv4 }}"
 python: "{{ venv_path }}/bin/python"
