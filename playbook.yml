@@ -5,10 +5,6 @@
    - { role: aws, tags: [ "aws" ] }
 
 
-#- hosts: localhost
-#  vars_files:
-#   - ./env/vars.yml
-
 - hosts: wave_webservers
   gather_facts: True
   vars_files:
@@ -17,5 +13,6 @@
     - { role: common, tags: [ "common" ] }
     - { role: nginx, tags: [ "nginx" ] }
     - { role: deploy, tags: [ "deploy" ] }
+    - { role: ssl, tags: [ "ssl" ] }
 
 
