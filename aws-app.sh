@@ -28,25 +28,28 @@ new_instance_ip=$(aws ec2 describe-instances --filters Name=tag:Name,Values=wsoy
 
 ## Forcefully bootstrap 16.04 LTS ami
 
-#ssh -i "./wsoyinka-opseng-challenge-key.pem" -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo apt-get -y update && sudo dpkg --configure -a  && sudo apt-get -q -y install python2.7 && sudo ln  -s /usr/bin/python2.7 /usr/bin/python" 
 
-echo "Did I get here at all ?"
+ssh  -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo apt-get -qq -y update && sudo dpkg --configure -a"  
 
-ssh -v -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo apt-get -y update && sudo dpkg --configure -a"  
 
-echo "Or even here at all ?? "
+ssh  -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo apt-get -qq -y install python2.7"
 
-ssh -v -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo apt-get -q -y install python2.7"
-
-ssh -v -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo ln  -s /usr/bin/python2.7 /usr/bin/python" 
+ssh  -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubuntu@$new_instance_ip  "sudo ln  -s /usr/bin/python2.7 /usr/bin/python" 
 
 
 ansible-playbook --tag common,nginx,deploy   playbook.yml 
 
 ansible-vault encrypt  env/secrets.yml --ask-vault-pass
 
-echo  "The website can be reached at:"
+echo ""
+echo ""
 
+clear
+
+echo ""
+echo ""
+
+echo  "The website can be reached at:"
 echo ""
 
 echo  "http://$new_instance_ip " 
