@@ -12,7 +12,6 @@
   roles:
     - { role: common, tags: [ "common" ] }
     - { role: nginx, tags: [ "nginx" ] }
-    - { role: ssl, tags: [ "ssl" ] }
     - { role: deploy, tags: [ "deploy" ] }
 
 
