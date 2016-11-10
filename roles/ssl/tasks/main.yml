@@ -8,3 +8,4 @@
    -subj /CN=bobjoe
    -keyout {{ key_file }} -out {{ cert_file }}
   become: True
+  notify: restart nginx
