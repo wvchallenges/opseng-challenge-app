@@ -14,7 +14,7 @@ source waveansible/bin/activate
 pip -q install ansible
 pip -q install boto
 
-ansible-vault decrypt  env/secrets.yml --vault-password-file env/notgood.txt
+ansible-vault decrypt  env/secrets.yml --ask-vault-pass
 
 source env/secrets.yml
 
@@ -43,7 +43,7 @@ ssh -v -i ./wsoyinka-opseng-challenge-key.pem -o StrictHostKeyChecking=no  ubunt
 
 ansible-playbook --tag common,nginx,deploy   playbook.yml 
 
-ansible-vault encrypt  env/secrets.yml --vault-password-file env/notgood.txt
+ansible-vault encrypt  env/secrets.yml --ask-vault-pass
 
 echo  "The website can be reached at:"
 
