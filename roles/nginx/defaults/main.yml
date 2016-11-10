@@ -15,7 +15,6 @@ domains:
 repo_url: https://github.com/wsoyinka/opseng-challenge-app.git
 gunicorn_port: 8000
 locale: en_US.UTF-8
-conf_path: /etc/nginx/conf
 reqs_file: requirements.txt
 tls_enabled: False
 key_file: /etc/nginx/ssl/nginx.key
