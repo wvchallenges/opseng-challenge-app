@@ -49,14 +49,14 @@ clear
 echo ""
 echo ""
 
-echo  "The website can be reached at:"
+echo  "The Web-App can be reached at:"
 echo ""
 
 echo  "http://$new_instance_ip " 
 
 echo ""
 
-echo " Wave Cares About You Financial Records/Data.  PCI DSS compliant version of this high security application is here :-) "
+echo " Wave Cares About Your Financial Records/Data.  PCI-DSS compliant version of this high security application is here :-) "
 
 echo ""
 
