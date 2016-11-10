@@ -53,7 +53,7 @@ echo  "http://$new_instance_ip "
 
 echo ""
 
-echo " We are working on a more PCI DSS compliant version of the site...because we care about  wave customer data. Coming soon and can be reached here:"
+echo " Wave Cares About You Financial Records/Data.  PCI DSS compliant version of this high security application is here :-) "
 
 echo ""
 
