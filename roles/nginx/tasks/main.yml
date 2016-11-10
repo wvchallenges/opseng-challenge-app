@@ -1,20 +1,19 @@
 ---
 # tasks file for nginx
 
-
+- name: Generate certs
+  raw: >
+   mkdir -p /etc/nginx/ssl  &&
+   openssl req -x509 -nodes -days 3650 -newkey rsa:2048
+   -subj /CN=bobjoe
+   -keyout {{ key_file }} -out {{ cert_file }}
+  become: True
+#  notify: restart nginx
 
 - name: set the nginx config file
   template: src=wave-nginx.conf.j2  dest=/etc/nginx/sites-available/waveapp.conf
   become: True
   notify: restart nginx
-
-#- name: Generate certs
-#  command: >
-#   mkdir -p /etc/nginx/ssl  &&
-#   openssl req -x509 -nodes -days 3650 -newkey rsa:2048
-#   -subj /CN={{ server_name }}
-#   -keyout {{ key_file }} -out {{ cert_file }}
-#  become: True
 
 - name: enable the nginx config file
   file:
