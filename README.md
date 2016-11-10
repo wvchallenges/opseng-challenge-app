@@ -34,10 +34,25 @@ Various technologies, stacks and hacks were used for this task. Some of them are
 * aws-cli tools 
 
 
-To get started, download and excute the aws-app.sh script.
+To get started, download and excute the aws-app.sh script in a suitable location on your filesystem.
 
 ```
-$ wget *****
+$ wget https://github.com/wsoyinka/opseng-challenge-app/blob/master/aws-app.sh
 $ ./aws-app.sh
-$ <Supply the password provided to decrypt sentsive information required for this process>
+$ <Supply the password provided to decrypt sentsive information required for this process >
 ```
+
+# CHALLENGES
+
+A few [minor] speedbumps were encountered in cobbling together this solution. Some were:
+
+* Delibrate choice of OS version (Ubuntu 16.04 LTS)
+
+* Improperly documentated changes/regressions in the internals of some of the major components
+
+* Opaqueness of data structures in some of the bleeding edge ansible modules needed
+
+# SOLUTIONS
+
+
+# FUN FACTS
