@@ -91,7 +91,6 @@
   wait_for: host={{ item.public_ip }} port=22 connect_timeout=10 search_regex=OpenSSH
   with_items: "{{ ec2.instances }}"
 
-
-
-#- name: OR - even better use PCI compliant version view sensitive Wave Customer Data :-)
-#  debug: msg="https://{{ ansible_ec2_public_ipv4 }}"
+#- name: try raw here
+#  raw: sudo apt-get -qq -y install python2.7 
+# never mind ..
