@@ -61,9 +61,14 @@
         cidr_ip: 0.0.0.0/0
   register: wavesecgroup
 
+- name: decommision current instance
+  local_action:
+   module: ec2
+   instance_tags:
+      Name: wsoyinka-waveapp 
+   state: absent
 
-
-- name: start the instances
+- name: create new instance
   ec2:
     region: "{{ region }}"
     image: "{{ ubuntu_image }}"
