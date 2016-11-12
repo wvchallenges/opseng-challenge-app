@@ -23,7 +23,7 @@ echo "Starting AWS setup ...."
 ansible-playbook --tag aws   playbook.yml 
 
 
-new_instance_ip=$(aws ec2 describe-instances --filters Name=tag:Name,Values=wsoyinka-waveapp --output text --query 'Reservations[*].Instances[1].PublicIpAddress')
+new_instance_ip=$(aws ec2 describe-instances --filters Name=tag:Name,Values=wsoyinka-waveapp --output text --query 'Reservations[*].Instances[*].PublicIpAddress')
 
 
 ## Forcefully bootstrap 16.04 LTS ami
