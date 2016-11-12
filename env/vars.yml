@@ -30,7 +30,7 @@ proj_version: HEAD
 
 region: us-east-1
 instance_type: t2.micro
-count: 1
+count: 5
 #gather_facts: False
 ubuntu_image: ami-c8580bdf
 # broken  16.04 LTS (HVM), SSD Volume Type - ami-40d28157
