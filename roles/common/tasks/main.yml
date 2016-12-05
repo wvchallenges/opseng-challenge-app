@@ -1,0 +1,23 @@
+---
+# tasks file for common
+
+#- name: wait for ssh service to be reachable
+#  wait_for: host={{ item.public_ip }} port=22 connect_timeout=10 search_regex=OpenSSH
+#  with_items: "{{ ec2.instances }}"
+
+#- name: reconfig dpkg
+#  command:  "dpkg --configure -a"
+#  become: True
+
+
+- name: install apt packages
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+  become: True
+  with_items:
+   - git
+   - nginx
+   - python-dev
+   - python-pip
+   - python-setuptools
+   - python-virtualenv
+   - supervisor

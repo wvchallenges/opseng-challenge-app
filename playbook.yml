@@ -1,0 +1,17 @@
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  roles:
+   - { role: aws, tags: [ "aws" ] }
+
+
+- hosts: wave_webservers
+  gather_facts: True
+  vars_files:
+   - ./env/vars.yml
+  roles:
+    - { role: common, tags: [ "common" ] }
+    - { role: nginx, tags: [ "nginx" ] }
+    - { role: deploy, tags: [ "deploy" ] }
+
+

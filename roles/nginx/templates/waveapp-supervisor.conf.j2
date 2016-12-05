@@ -1,0 +1,8 @@
+[program:{{ proj_name }}]
+
+command = {{ proj_path }}/gunicorn_start.sh
+user = {{ user }}
+startretries=2
+autostart=true
+autorestart=true
+stopwaitsecs = 60

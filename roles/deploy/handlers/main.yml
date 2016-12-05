@@ -1,0 +1,6 @@
+---
+# handlers file for deploy
+
+- name: restart supervisor
+  supervisorctl: name=opseng-challenge state=restarted
+  become: True

@@ -1,0 +1,55 @@
+---
+# tasks file for nginx
+
+- name: Generate certs
+  raw: >
+   mkdir -p /etc/nginx/ssl  &&
+   openssl req -x509 -nodes -days 3650 -newkey rsa:2048
+   -subj /CN=bobjoe
+   -keyout {{ key_file }} -out {{ cert_file }}
+  become: True
+#  notify: restart nginx
+
+- name: set the nginx config file
+  template: src=wave-nginx.conf.j2  dest=/etc/nginx/sites-available/waveapp.conf
+  become: True
+  notify: restart nginx
+
+- name: enable the nginx config file
+  file:
+    src: /etc/nginx/sites-available/waveapp.conf
+    dest:  /etc/nginx/sites-enabled/waveapp.conf
+    state: link
+  notify: restart nginx
+  become: True
+
+
+- name: remove the default nginx config file
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+  become: True
+
+- name: add supervisor group
+  group: name=supervisor state=present
+  become: True
+
+- name: add user to supervisor group
+  user: name=ubuntu group=supervisor
+  become: True
+
+- name: copy over broken default supervisor.conf
+  template: src=main-supervisor.conf.j2 dest=/etc/supervisor/supervisord.conf
+  become: True
+  notify: start supervisor
+
+- name: start supervisor
+  service: name=supervisor state=started
+#  raw: service supervisor start
+  become: True
+
+- name: set the supervisor config files
+  template: src=waveapp-supervisor.conf.j2 dest=/etc/supervisor/conf.d/waveapp.conf
+  become: True
+  notify: restart supervisor

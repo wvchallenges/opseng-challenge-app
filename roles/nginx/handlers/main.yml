@@ -1,0 +1,20 @@
+---
+# handlers file for nginx
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: True
+
+# - name: start stop bug on xenial
+#   shell: touch /var/run/supervisor.sock
+#   become: True
+
+
+- name: start supervisor
+  service: name=supervisor state=started
+#  raw: service supervisor start
+  become: True
+
+- name: restart supervisor
+  supervisorctl: name=opseng-challenge state=restarted
+  become: True

@@ -1,1 +1,6 @@
 *.pyc
+waveansible*
+playbook.retry*
+inventory/hosts*
+addtoignore-delete*
+*.pem

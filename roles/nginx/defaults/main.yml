@@ -1,0 +1,27 @@
+---
+# defaults file for nginx
+
+
+user: "{{ ansible_user }}"
+proj_name: opseng-challenge
+venv_home: "{{ ansible_env.HOME }}"
+venv_path: "{{ venv_home }}/{{ proj_name }}"
+proj_dirname: project
+proj_path: "{{ venv_path }}/{{ proj_dirname }}"
+live_hostname: 192.168.100.100.xip.io
+domains:
+ - 192.168.100.100.xip.io
+ - www.192.168.100.100.xip.io
+#repo_url: https://github.com/wsoyinka/opseng-challenge-app.git
+gunicorn_port: 8000
+locale: en_US.UTF-8
+reqs_file: requirements.txt
+tls_enabled: False
+key_file: /etc/nginx/ssl/nginx.key
+cert_file: /etc/nginx/ssl/nginx.crt
+conf_file: /etc/nginx/sites-available/default
+server_name: "{{ ansible_ec2_public_ipv4 }}"
+python: "{{ venv_path }}/bin/python"
+gunicorn_proc_name: opseng-challenge
+proj_logdir: "/var/log/{{ proj_name }}"
+proj_version: HEAD
