@@ -10,7 +10,8 @@ live_hostname: 192.168.100.100.xip.io
 domains:
  - 192.168.100.100.xip.io
  - www.192.168.100.100.xip.io
-repo_url: https://github.com/wvchallenges/opseng-challenge-app.git
+#repo_url: https://github.com/wvchallenges/opseng-challenge-app.git
+repo_url: https://github.com/wsoyinka/demo78.git
 gunicorn_port: 8000
 locale: en_US.UTF-8
 conf_path: /etc/nginx/conf
