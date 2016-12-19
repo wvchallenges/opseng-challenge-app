@@ -1,0 +1,17 @@
+---
+
+# Set up for Bastion host
+ansible_ssh_private_key_file: '<key-pair>'
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o ProxyCommand="ssh -i svaranasi-kp -W %h:%p -q <bastion-string>"'
+
+ami_id: ami-f5f41398
+vpc_id: <vpcid>
+vpc_pvt_subnet_1: <pvt_sub1>
+vpc_pub_subnet_2: <pub_sub1>
+
+region: us-east-1
+ec2_keypair: svaranasi-kp
+
+bastion_sg: svaranasi_bastion_sg
+pvt_sg: svaranasi_pvt_sg
+elb_sg: svaranasi_elb_sg

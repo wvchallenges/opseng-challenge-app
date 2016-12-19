@@ -1,0 +1,15 @@
+---
+
+- hosts: tag_Name_svaranasi_private_instance
+  remote_user: ec2-user
+  sudo: yes
+
+  tasks:
+
+  - include_vars: group_vars/all
+
+  - pip:
+    requirements: requirements.txt
+
+  - name: copy init
+    copy: src=app.py dest=/home/ec2-user mode=0644

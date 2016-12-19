@@ -11,6 +11,12 @@ install:
 
 script:
 - openssl aes-256-cbc -K $encrypted_be9856372e02_key -iv $encrypted_be9856372e02_iv -in svaranasi-kp.enc -out svaranasi-kp -d
+- chmod +x ec2.py ec2_pub.py
+- chmod 400 svaranasi-kp
+- export AWS_ACCESS_KEY_ID=$AK
+- export AWS_SECRET_ACCESS_KEY=$SK
+- export AWS_REGION="us-east-1"
+- . ./deploy.sh
 
 env:
   global:
