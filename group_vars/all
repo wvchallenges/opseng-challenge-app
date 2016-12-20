@@ -7,7 +7,7 @@ ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o ProxyCommand="ssh -i sv
 ami_id: ami-f5f41398
 vpc_id: <vpcid>
 vpc_pvt_subnet_1: <pvt_sub1>
-vpc_pub_subnet_2: <pub_sub1>
+vpc_pub_subnet_1: <pub_sub1>
 
 region: us-east-1
 ec2_keypair: svaranasi-kp
