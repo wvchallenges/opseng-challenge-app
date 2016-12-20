@@ -10,6 +10,10 @@ install:
 - pip install boto
 - pip install awscli
 
+before_script:
+- PUBLIC_IP=`wget http://ipecho.net/plain -O - -q ; echo`
+- "echo travis_ip: $PUBLIC_IP >> group_vars/all"
+
 script:
 - openssl aes-256-cbc -K $encrypted_be9856372e02_key -iv $encrypted_be9856372e02_iv -in svaranasi-kp.enc -out svaranasi-kp -d
 - chmod +x ec2.py ec2_pub.py
