@@ -98,7 +98,7 @@ else
 fi
 
 ################################################################################
-ansible-playbook 011_create_bastion_host.yml
+ansible-playbook 011_create_bastion.yml
 
 # ec2_pub.py is set to look at public IP addresses. let's refresh it.
 ./ec2_pub.py --refresh > /dev/null
