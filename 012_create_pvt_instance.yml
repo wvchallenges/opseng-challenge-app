@@ -57,6 +57,6 @@
   - name: Instance Register
     local_action:
       module: ec2_elb
-      instance_id: "{{ ec2.instances.id }}"
+      instance_id: "{{ ec2.tagged_instances.id }}"
       ec2_elbs: "svaranasi-lb"
       state: present
