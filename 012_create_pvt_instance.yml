@@ -52,3 +52,11 @@
         Name: "svaranasi_private_instance"
       assign_public_ip: no
     register: ec2
+  - debug: var=ec2
+
+  - name: Instance Register
+    local_action:
+      module: ec2_elb
+      instance_id: "{{ ec2.instances.id }}"
+      ec2_elbs: "svaranasi-lb"
+      state: present

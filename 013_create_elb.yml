@@ -39,7 +39,7 @@
       name: 'svaranasi-lb'
       security_group_ids: "{{ elb_sg }}"
       region: us-east-1
-      subnets: "{{ pub_sub1 }}"
+      subnets: "{{ vpc_pub_subnet_1 }}"
       purge_subnets: yes
       listeners:
         - protocol: http
