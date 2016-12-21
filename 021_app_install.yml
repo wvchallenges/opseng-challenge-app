@@ -11,5 +11,4 @@
   - pip:
       requirements: requirements.txt
 
-  - name: copy init
-      copy: src=app.py dest=/home/ec2-user mode=0644
+  - copy: src=app.py dest=/home/ec2-user mode=0644
