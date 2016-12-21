@@ -113,6 +113,12 @@ ssh-keyscan -H $bastion_ip >> ~/.ssh/known_hosts
 ansible-playbook 012_create_pvt_instance.yml
 ansible-playbook 013_create_elb.yml
 
+#Register the instance with the ELB. Easier with AWS CLI than Ansible.
+
+iid=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=svaranasi_private_instance" --query 'Reservations[].Instances[].InstanceId')
+echo "Registering Instance $iid with ELB"
+aws elb register-instances-with-load-balancer --load-balancer-name svaranasi-lb --instances
+
 ansible-playbook -i ec2.py 021_app_install.yml
 
 ################################################################################
