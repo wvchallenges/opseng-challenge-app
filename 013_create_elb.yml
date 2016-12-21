@@ -37,7 +37,7 @@
       module: ec2_elb_lb
       state: present
       name: 'svaranasi-lb'
-      security_group_ids: "{{ elb_sg }}"
+      security_group_ids: "{{ elb_ec2_group.group_id }}"
       region: us-east-1
       subnets: "{{ vpc_pub_subnet_1 }}"
       purge_subnets: yes
