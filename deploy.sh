@@ -61,11 +61,13 @@ if [ -z $igw ]; then
     igw=$(aws ec2 create-internet-gateway --query 'InternetGateway.InternetGatewayId')
     #Attach to VPC
     aws ec2 attach-internet-gateway --internet-gateway-id $igw --vpc-id $vpcid
-    #Create routes for public subnet / public routing table
-    aws ec2 create-route --route-table-id $rtb_nonmain --destination-cidr-block 0.0.0.0/0 --gateway-id $igw
     # Tag it
     aws ec2 create-tags --resources $igw --tags Key=Name,Value=svaranasi
 fi
+
+#Create routes for public subnet / public routing table. Always returns "True" - immutable operation. Never returns error.
+aws ec2 create-route --route-table-id $rtb_nonmain --destination-cidr-block 0.0.0.0/0 --gateway-id $igw
+
 echo "Internet Gateway: $igw"
 
 nat_gw=$(aws ec2 describe-nat-gateways --nat-gateway-ids $nat_gw --query "NatGateways[?SubnetId=='$pub_sub1'].NatGatewayId")
