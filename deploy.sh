@@ -121,7 +121,7 @@ iid=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=svaranasi_priva
 echo "Registering Instance ${iid} with ELB"
 aws elb register-instances-with-load-balancer --load-balancer-name svaranasi-lb --instances $iid
 
-ansible-playbook -i ec2.py 021_app_install.yml
+ansible-playbook -vvv -i ec2.py 021_app_install.yml
 
 ################################################################################
 ################################################################################
