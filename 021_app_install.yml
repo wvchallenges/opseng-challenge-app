@@ -2,6 +2,8 @@
 
 - hosts: tag_Name_svaranasi_private_instance
   remote_user: ec2-user
+  become: yes
+  become_user: root
 
   tasks:
   
@@ -16,5 +18,5 @@
   - copy: src=requirements.txt dest=/home/ec2-user mode=0644
 
   - command: /usr/local/bin/pip install -r requirements.txt
-    become: yes
-    become_user: root
+    #become: yes
+    #become_user: root
