@@ -2,19 +2,16 @@
 
 - hosts: tag_Name_svaranasi_private_instance
   remote_user: ec2-user
-  #sudo: yes
 
   
 
   tasks:
   
-  - name: Install Python Pip
-      yum: name=python-pip state=latest
-
   - include_vars: group_vars/all
 
   - copy: src=app.py dest=/home/ec2-user mode=0644
   - copy: src=requirements.txt dest=/home/ec2-user mode=0644
 
-  - pip:
-      requirements: requirements.txt
+  - command: /usr/local/bin/pip install -r requirements.txt
+    become: yes
+    become_user: root
