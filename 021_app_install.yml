@@ -2,7 +2,7 @@
 
 - hosts: tag_Name_svaranasi_private_instance
   remote_user: ec2-user
-  sudo: yes
+  #sudo: yes
 
   tasks:
 
@@ -10,6 +10,10 @@
 
   - copy: src=app.py dest=/home/ec2-user mode=0644
   - copy: src=requirements.txt dest=/home/ec2-user mode=0644
+
+  - pip:
+      name: pip
+      extra_args: --upgrade
 
   - pip:
       requirements: requirements.txt
