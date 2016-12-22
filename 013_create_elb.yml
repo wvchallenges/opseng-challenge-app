@@ -48,7 +48,7 @@
       health_check:
           ping_protocol: http 
           ping_port: 80
-          ping_path: "/index.html" 
+          ping_path: "/" 
           response_timeout: 5 
           interval: 45 
           unhealthy_threshold: 3

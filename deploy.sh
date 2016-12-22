@@ -143,7 +143,7 @@ ansible-playbook -vvv -i ec2.py 021_app_install.yml
 #    elb_sg=$(aws ec2 create-security-group --vpc-id $vpcid --group-name svaranasi_elb_sg --description "Public ELB for the application" --query 'GroupId')
 #fi
 
-#app_dns=$(aws elb describe-load-balancers --query 'LoadBalancerDescriptions[?LoadBalancerName==`svaranasi-lb`].DNSName')
+app_dns=$(aws elb describe-load-balancers --query 'LoadBalancerDescriptions[?LoadBalancerName==`svaranasi-lb`].DNSName')
 #if ! [[ "$app_dns" == *"svaranasi"* ]]; then
     #Create ELB
 #    app_dns=$(aws elb create-load-balancer --load-balancer-name svaranasi-lb --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --subnets $pub_sub1 --security-groups $elb_sg --query 'DNSName')
@@ -192,5 +192,5 @@ ansible-playbook -vvv -i ec2.py 021_app_install.yml
 #From ELB to PVT SG
 #aws ec2 authorize-security-group-egress --group-id $elb_sg --protocol tcp --port 80 --source-group $pvt_sg
 
-#echo "The app will be available shortly on $app_dns"
+echo "The app will be available shortly on $app_dns"
 ### END SCRIPT ###

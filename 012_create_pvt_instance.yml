@@ -54,3 +54,12 @@
     register: ec2
   - debug: var=ec2
 
+  - name: Wait until SSH is available
+    local_action:
+      module: wait_for
+      host: "{{ item.private_ip }}"
+      port: 22
+      delay: 10
+      timeout: 120
+      search_regex: OpenSSH
+    with_items: ec2.instances

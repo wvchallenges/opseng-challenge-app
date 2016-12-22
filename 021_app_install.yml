@@ -3,9 +3,12 @@
 - hosts: tag_Name_svaranasi_private_instance
   remote_user: ec2-user
 
-  
-
   tasks:
+  
+  - name: install the latest version of Apache
+    yum:
+      name: nginx
+      state: present
   
   - include_vars: group_vars/all
 
