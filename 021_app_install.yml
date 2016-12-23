@@ -8,6 +8,13 @@
   tasks:
   - include_vars: group_vars/all.yml
 
+  - copy:
+      src: requirements.txt
+      dest: /home/ec2-user
+      mode: 0644
+      owner: ec2-user
+      group: ec2-user
+
   - command: /usr/local/bin/pip install -r requirements.txt
 
   - name: make folder
