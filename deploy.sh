@@ -40,7 +40,7 @@ sed -i "s/<pvt_sub1>/$pvt_sub1/g" group_vars/all.yml
 #Routing Table
 rtb_nonmain=$(aws ec2 describe-route-tables --filters 'Name=tag:Name,Values=svaranasi,Name=tag:Type,Values=Public' Name=vpc-id,Values="${vpcid}" --query RouteTables[].RouteTableId)
 
-if [ -z $rtb_non_main ]; then
+if [ -z $rtb_nonmain ]; then
     #Create non-main route table:
     rtb_nonmain=$(aws ec2 create-route-table --vpc-id $vpcid --query 'RouteTable.RouteTableId')
     #Tag it
