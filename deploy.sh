@@ -28,8 +28,8 @@ if [ -z $pvt_sub1 ]; then
     pvt_sub1=$(aws ec2 create-subnet --vpc-id $vpcid --cidr-block 10.0.15.64/26 --availability-zone us-east-1d --query 'Subnet.SubnetId')
 fi
 #Tag them
-aws ec2 create-tags --resources $pub_sub1 --tags Key=Name,Value=svaranasi
-aws ec2 create-tags --resources $pvt_sub1 --tags Key=Name,Value=svaranasi
+aws ec2 create-tags --resources $pub_sub1 --tags Key=Name,Value=svaranasi Key=Type,Value=Public
+aws ec2 create-tags --resources $pvt_sub1 --tags Key=Name,Value=svaranasi Key=Type,Value=Private
 
 echo "Public Subnet#1 $pub_sub1"
 echo "Private Subnet#1 $pvt_sub1"
