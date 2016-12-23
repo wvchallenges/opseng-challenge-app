@@ -6,17 +6,26 @@
   become_user: root
 
   tasks:
+
+  - command: /usr/local/bin/pip install -r requirements.txt
   
   - name: install the latest version of Apache
     yum:
       name: nginx
       state: present
   
-  - include_vars: group_vars/all
+  - include_vars: group_vars/all.yaml
 
-  - copy: src=app.py dest=/home/ec2-user mode=0644
-  - copy: src=requirements.txt dest=/home/ec2-user mode=0644
+  - copy: src=app.py dest=/home/ec2-user mode=0644 owner=ec2-user group=ec2-user
+  - copy: src=requirements.txt dest=/home/ec2-user mode=0644 owner=ec2-user group=ec2-user
+  - copy: src=nginx.conf dest=/etc/nginx mode=0644 owner=root group=root 
+  - copy: src=gunicorn.conf dest=/etc/init mode=0644 owner=root group=root
 
-  - command: /usr/local/bin/pip install -r requirements.txt
-    #become: yes
-    #become_user: root
+  - service:
+      name: nginx
+      state: started
+
+  - service:
+      name: gunicorn
+      state: started
+
