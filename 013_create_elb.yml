@@ -6,7 +6,7 @@
 
   tasks:
 
-  - include_vars: group_vars/all
+  - include_vars: group_vars/all.yml
 #    when: lookup('env','ENV') == "prod"
 
   - name: create/maintain EC2 security group for ELB 
