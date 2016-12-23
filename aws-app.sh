@@ -6,8 +6,8 @@ app_dns=$(aws elb describe-load-balancers --query 'LoadBalancerDescriptions[?Loa
 if ! [[ "$app_dns" == *"svaranasi"* ]]; then
     printf "\n\nCouldn't find ELB.\n Please create infrastructure by re-building last Travis build of a previous Git Push or PR."
 else
-    http_code=$(curl -so /dev/null -X GET -w "%{http_code}" http://svaranasi-lb-1111417631.us-east-1.elb.amazonaws.com)
+    http_code=$(curl -so /dev/null -X GET -w "%{http_code}" http://${app_dns})
     if [[ $http_code == 200 ]]; then
-        echo "The app is available on $app_dns"
+        echo "The app is available on: http://$app_dns"
     fi
 fi
