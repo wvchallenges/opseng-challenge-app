@@ -9,16 +9,35 @@
   - include_vars: group_vars/all.yml
 
   - command: /usr/local/bin/pip install -r requirements.txt
+
+  - name: make folder
+    file: path=/home/ec2-user/svaranasi state=directory owner=ec2-user group=ec2-user
+ 
+  - git:
+      repo: https://github.com/wvchallenges/opseng-challenge-app.git
+      dest: /home/ec2-user/svaranasi
+    notify: restart-gunicorn
   
-  - name: install the latest version of Apache
+  - name: install the latest version of Nginx
     yum:
       name: nginx
       state: present
-  
-  - copy: src=app.py dest=/home/ec2-user mode=0644 owner=ec2-user group=ec2-user
-  - copy: src=requirements.txt dest=/home/ec2-user mode=0644 owner=ec2-user group=ec2-user
-  - copy: src=nginx.conf dest=/etc/nginx mode=0644 owner=root group=root 
-  - copy: src=gunicorn.conf dest=/etc/init mode=0644 owner=root group=root
+ 
+  - copy: 
+      src: gunicorn.conf 
+      dest: /etc/init
+      mode: 0644
+      owner: root
+      group: root
+    notify: restart-gunicorn
+
+  - copy:
+      src: nginx.conf 
+      dest: /etc/nginx
+      mode: 0644
+      owner: root
+      group: root
+    notify: restart-nginx
 
   - service:
       name: nginx
@@ -28,3 +47,8 @@
       name: gunicorn
       state: started
 
+  handlers:
+  - name: restart-nginx
+    action: service name=nginx state=restarted
+  - name: restart-gunicorn
+    action: service name=gunicorn state=restarted
