@@ -19,17 +19,17 @@ sleep 5
 pub_sub1=$(aws ec2 describe-subnets --filters 'Name=tag:Name,Values=svaranasi,Name=tag:Type,Values=Public' Name=vpc-id,Values="${vpcid}" --query Subnets[].SubnetId)
 pvt_sub1=$(aws ec2 describe-subnets --filters 'Name=tag:Name,Values=svaranasi,Name=tag:Type,Values=Private' Name=vpc-id,Values="${vpcid}" --query Subnets[].SubnetId)
 
-if [ -z $pub_sub1 ] || [ -z $pvt_sub1 ]; then
-    #Subnet create
+if [ -z $pub_sub1 ]; then
     #Public Subnets X 1 - 64 IPs each [2^6]
     pub_sub1=$(aws ec2 create-subnet --vpc-id $vpcid --cidr-block 10.0.15.0/26 --availability-zone us-east-1d --query 'Subnet.SubnetId')
+fi
+if [ -z $pvt_sub1 ]; then
     #Private Subnets X 1
     pvt_sub1=$(aws ec2 create-subnet --vpc-id $vpcid --cidr-block 10.0.15.64/26 --availability-zone us-east-1d --query 'Subnet.SubnetId')
-
-    #Tag them
-    aws ec2 create-tags --resources $pub_sub1 --tags Key=Name,Value=svaranasi
-    aws ec2 create-tags --resources $pvt_sub1 --tags Key=Name,Value=svaranasi
 fi
+#Tag them
+aws ec2 create-tags --resources $pub_sub1 --tags Key=Name,Value=svaranasi
+aws ec2 create-tags --resources $pvt_sub1 --tags Key=Name,Value=svaranasi
 
 echo "Public Subnet#1 $pub_sub1"
 echo "Private Subnet#1 $pvt_sub1"
