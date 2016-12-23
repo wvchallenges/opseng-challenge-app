@@ -2,7 +2,7 @@
 This repo creates all the infrastructure necessary to host the Python app.py app
 
 ## What's Created
-- Bastion instance (on public subnet) exclusive to this app. Travis modifies the sec_grp to run ansible playbooks through it.
+- Bastion instance (on public subnet) exclusive to this app. Travis modifies the sec_grp inbound to run ansible playbooks through it. No other entity has access to the bastion instance but for Travis.
 
 - Private instance (on private subnet) that hosts the app. 
    - Install requirements from requirements.txt using PIP
@@ -10,7 +10,7 @@ This repo creates all the infrastructure necessary to host the Python app.py app
    - Install Nginx and use as proxy. Listen on port 80. Proxy to port 8000.
    - Gunicorn as Upstart service. Serve on port 8000.
 
-- An Elastic Load Balancer that listens on 80 and serves on 80. Helps keep private instance from attacks.
+- An Elastic Load Balancer that listens on 80 and serves on 80. Helps keep private instance from attacks. Only one subnet (AZ) was used as high-availability didn't seem to matter for this challenge. It would be easy to add HA by adding another private instance in another AZ, and/or using an autoscaling group that scales based on alarms. 
 
 ## Setup
 - Git repo hooked to Travis CI so every push and PR is built automatically.
