@@ -11,7 +11,7 @@ if [ -z $vpcid ]; then
     aws ec2 create-tags --resources $vpcid --tags Key=Name,Value=svaranasi
 fi
 echo "VPC ID $vpcid"
-sed -i "s/<vpcid>/$vpcid/g" group_vars/all
+sed -i "s/<vpcid>/$vpcid/g" group_vars/all.yml
 sleep 5
 
 ##########################
@@ -33,8 +33,8 @@ fi
 
 echo "Public Subnet#1 $pub_sub1"
 echo "Private Subnet#1 $pvt_sub1"
-sed -i "s/<pub_sub1>/$pub_sub1/g" group_vars/all
-sed -i "s/<pvt_sub1>/$pvt_sub1/g" group_vars/all
+sed -i "s/<pub_sub1>/$pub_sub1/g" group_vars/all.yml
+sed -i "s/<pvt_sub1>/$pvt_sub1/g" group_vars/all.yml
 ################################
 
 #Routing Table
@@ -105,7 +105,7 @@ ansible-playbook 011_create_bastion.yml
 # ec2_pub.py is set to look at public IP addresses. let's refresh it.
 ./ec2_pub.py --refresh > /dev/null
 bastion_ip=$(ansible -i ec2_pub.py tag_Name_svaranasi_bastion_instance --list-hosts | awk '{print $1}' | sed 's/hosts//g' | tr -d '\n')
-sed -i "s/<bastion-string>/ec2-user@$bastion_ip/g" group_vars/all
+sed -i "s/<bastion-string>/ec2-user@$bastion_ip/g" group_vars/all.yml
 echo $bastion_ip
 ssh-keyscan -H $bastion_ip >> ~/.ssh/known_hosts
 
