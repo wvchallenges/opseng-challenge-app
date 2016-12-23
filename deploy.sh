@@ -112,8 +112,8 @@ ssh-keyscan -H $bastion_ip >> ~/.ssh/known_hosts
 # ec2.py is set to look at internal IP addresses. let's refresh it.
 ## Switch to using private IPs ##
 ./ec2.py --refresh > /dev/null
-ansible-playbook 012_create_pvt_instance.yml
-ansible-playbook 013_create_elb.yml
+ansible-playbook 012_create_elb.yml
+ansible-playbook 013_create_pvt_instance.yml
 
 #Register the instance with the ELB. Easier with AWS CLI than Ansible.
 
