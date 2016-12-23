@@ -121,76 +121,8 @@ iid=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=svaranasi_priva
 echo "Registering Instance ${iid} with ELB"
 aws elb register-instances-with-load-balancer --load-balancer-name svaranasi-lb --instances $iid
 
-ansible-playbook -vvv -i ec2.py 021_app_install.yml
+ansible-playbook -i ec2.py 021_app_install.yml
 
 ################################################################################
 ################################################################################
-
-### EC2, ELB, ASG and LC configuration ###
-#Create Launch Config
-#Create LC security group (a.k.a private SG)
-#echo "Creating Launch Config SG, Launch Config"
-#pvt_sg=$(aws ec2 describe-security-groups --filters 'Name=group-name,Values="svaranasi_pvt_sg"' Name=vpc-id,Values="${vpcid}" --query SecurityGroups[].GroupId)
-#if [ -z $pvt_sg ]; then
-#    pvt_sg=$(aws ec2 create-security-group --vpc-id $vpcid --group-name svaranasi_pvt_sg --description "SG for Private Subnets" --query 'GroupId')
-#fi
-#echo "Private SG: $pvt_sg"
-
-#Create ELB security group
-#echo "Creating ELB SG, ELB, and defining Health Check on TCP 80.."
-#elb_sg=$(aws ec2 describe-security-groups --filters 'Name=group-name,Values="svaranasi_elb_sg"' Name=vpc-id,Values="${vpcid}" --query SecurityGroups[].GroupId)
-#if [ -z $elb_sg ]; then 
-#    elb_sg=$(aws ec2 create-security-group --vpc-id $vpcid --group-name svaranasi_elb_sg --description "Public ELB for the application" --query 'GroupId')
-#fi
-
-app_dns=$(aws elb describe-load-balancers --query 'LoadBalancerDescriptions[?LoadBalancerName==`svaranasi-lb`].DNSName')
-#if ! [[ "$app_dns" == *"svaranasi"* ]]; then
-    #Create ELB
-#    app_dns=$(aws elb create-load-balancer --load-balancer-name svaranasi-lb --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --subnets $pub_sub1 --security-groups $elb_sg --query 'DNSName')
-    # Enable Health Check on TCP 80
-#    aws elb configure-health-check --load-balancer-name svaranasi-lb --health-check Target=TCP:80,Interval=45,UnhealthyThreshold=3,HealthyThreshold=10,Timeout=5
-#fi
-
-#kp=$(aws ec2 describe-key-pairs --query 'KeyPairs[?KeyName==`svaranasi-kp`].KeyName')
-#if ! [ "$kp" == "svaranasi-kp" ]; then
-#    # Create KP
-#    aws ec2 create-key-pair --keyname svaranasi-kp
-#fi
-
-################################################################################################################
-#Setup Bastion
-#Create Bastion SG
-#echo "Creating Bastion SG and Bastion instance.."
-#bstn_sg=$(aws ec2 create-security-group --vpc-id $vpcid --group-name deploy-test-bastion --description "Deploy-Test-Bastion" --query 'GroupId')
-#Run instance
-#aws ec2 run-instances --image-id ami-002f0f6a --key-name "svaranasi-kp" --security-group-ids $bstn_sg --instance-type t2.micro --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"VolumeSize\":8}}]" --subnet-id $pub_sub1 --no-ebs-optimized --associate-public-ip-address
-
-
-#Security Groups Provisioning
-#To PVT SG From ELB
-#echo "Defining subnet groups inbound/outbound rules.."
-#aws ec2 authorize-security-group-ingress --group-id $pvt_sg --protocol tcp --port 22 --source-group $elb_sg
-#aws ec2 authorize-security-group-ingress --group-id $pvt_sg --protocol tcp --port 80 --source-group $elb_sg
-#To PVT SG From Self
-#aws ec2 authorize-security-group-ingress --group-id $pvt_sg --protocol all --source-group $pvt_sg
-#To PVT SG From Bastion
-#aws ec2 authorize-security-group-ingress --group-id $pvt_sg --protocol tcp --port 22 --source-group $bstn_sg
-#aws ec2 authorize-security-group-ingress --group-id $pvt_sg --protocol icmp --port -1 --source-group $bstn_sg
-
-# Get public IP of this machine to allow sec_grp access.
-#this_ip=$(curl http://ipecho.net/plain)
-
-#To ELB from world
-#aws ec2 authorize-security-group-ingress --group-id $elb_sg --protocol tcp --port 80 --cidr "${ip}/32"
-#To bastion from world
-#aws ec2 authorize-security-group-ingress --group-id $bstn_sg --protocol tcp --port 22 --cidr "${ip}/32"
-
-#From Bastion to PVT SG
-#aws ec2 authorize-security-group-egress --group-id $bstn_sg --protocol tcp --port 22 --source-group $pvt_sg
-#aws ec2 authorize-security-group-egress --group-id $bstn_sg --protocol icmp --port -1 --source-group $pvt_sg
-
-#From ELB to PVT SG
-#aws ec2 authorize-security-group-egress --group-id $elb_sg --protocol tcp --port 80 --source-group $pvt_sg
-
-echo "The app will be available shortly on $app_dns"
 ### END SCRIPT ###

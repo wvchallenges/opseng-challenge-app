@@ -52,7 +52,6 @@
         Name: "svaranasi_private_instance"
       assign_public_ip: no
     register: ec2
-  - debug: var=ec2
 
   - name: Wait until SSH is available
     local_action:

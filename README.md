@@ -23,5 +23,7 @@ This repo creates all the infrastructure necessary to host the Python app.py app
 
 ## Notes
 - aws-app.sh is designed to only return the ELB's DNS endpoint. It is left to Travis to create the necessary infrastructure. 
-- Plans were to also be able to spin-up infra using aws-app.sh but the differences between MacOS X and Travis' build environment meant I had to give up on that idea. That would have been very cool.
-
+- Plans were to also be able to spin-up infra using aws-app.sh but the differences between MacOS X and Travis' build environment meant giving up on the idea (even partially built it, only to delete the changes and resort to a simple aws-app.sh file)
+- It is assumed that the keypair "svaranasi-kp" is already created in the AWS account. It would have made it harder to distribute a freshly created KP between the scripts.
+- Ansible 2.0.2.0 was used for convenience and previous working knowledge. Much has changed with Ansible since then.
+- Amazon Linux was used to keep things simple and stable. The other obvious choice would have been Ubuntu 16.04. 
