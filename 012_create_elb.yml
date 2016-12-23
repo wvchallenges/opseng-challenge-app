@@ -1,0 +1,56 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+
+  - include_vars: group_vars/all.yml
+#    when: lookup('env','ENV') == "prod"
+
+  - name: create/maintain EC2 security group for ELB 
+    local_action:
+      module: ec2_group
+      name: "{{ elb_sg }}"
+      description: Public SG for the application LB
+      region: "us-east-1"
+      vpc_id: "{{ vpc_id }}"
+      rules:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+      state: present
+    register: elb_ec2_group
+
+  - name: Tag the SG
+    ec2_tag:
+      region: "{{ region }}"
+      resource: "{{ elb_ec2_group.group_id }}"
+      state: present
+      tags:
+        Name: "{{ elb_sg }}"
+
+  - name: Create ELB
+    local_action:
+      module: ec2_elb_lb
+      state: present
+      name: 'svaranasi-lb'
+      security_group_ids: "{{ elb_ec2_group.group_id }}"
+      region: us-east-1
+      subnets: "{{ vpc_pub_subnet_1 }}"
+      purge_subnets: yes
+      listeners:
+        - protocol: http
+          load_balancer_port: 80
+          instance_port: 80
+      health_check:
+          ping_protocol: http 
+          ping_port: 80
+          ping_path: "/" 
+          response_timeout: 5 
+          interval: 30
+          unhealthy_threshold: 3
+          healthy_threshold: 5
+

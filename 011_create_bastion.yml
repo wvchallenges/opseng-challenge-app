@@ -1,0 +1,62 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+
+  - include_vars: group_vars/all.yml
+#    when: lookup('env','ENV') == "prod"
+
+  - name: create/maintain EC2 security group for bastion host
+    local_action:
+      module: ec2_group
+      name: "{{ bastion_sg }}"
+      description: Security Group for Bastion Server
+      region: "us-east-1"
+      vpc_id: "{{ vpc_id }}"
+      rules:
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: "{{ travis_ip }}/32"
+      state: present
+    register: bastion_ec2_group
+
+  - name: Tag the SG
+    ec2_tag:
+      region: "{{ region }}"
+      resource: "{{ bastion_ec2_group.group_id }}"
+      state: present
+      tags:
+        Name: "{{ bastion_sg }}"
+
+  - name: Create bastion instance(s)
+    ec2:
+      group: "{{ bastion_sg }}"
+      key_name: "{{ ec2_keypair }}"
+      region: "{{ region }}"
+      image: "{{ ami_id }}"
+      wait: true
+      instance_type: "t2.nano"
+      vpc_subnet_id: "{{ vpc_pub_subnet_1 }}"
+      instance_tags:
+        Name: "svaranasi_bastion_instance"
+      exact_count: 1
+      count_tag:
+        Name: "svaranasi_bastion_instance"
+      assign_public_ip: yes
+    register: ec2
+
+
+  # Wait for instance to be alive
+  - name: Wait until SSH is available
+    local_action:
+      module: wait_for
+      host: "{{ item.public_ip }}"
+      port: 22
+      delay: 10
+      timeout: 180
+      search_regex: OpenSSH
+    with_items: ec2.instances

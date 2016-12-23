@@ -1,0 +1,64 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+
+  - include_vars: group_vars/all.yml
+#    when: lookup('env','ENV') == "prod"
+
+  - name: create/maintain EC2 security group for private instances 
+    local_action:
+      module: ec2_group
+      name: "{{ pvt_sg }}"
+      description: SG for Private Subnets
+      region: "us-east-1"
+      vpc_id: "{{ vpc_id }}"
+      rules:
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          group_name: "{{ elb_sg }}"
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          group_name: "{{ bastion_sg }}"
+      state: present
+    register: pvt_ec2_group
+
+  - name: Tag the SG
+    ec2_tag:
+      region: "{{ region }}"
+      resource: "{{ pvt_ec2_group.group_id }}"
+      state: present
+      tags:
+        Name: "{{ pvt_sg }}"
+
+  - name: Create private instance(s)
+    ec2:
+      group: "{{ pvt_sg }}"
+      key_name: "{{ ec2_keypair }}"
+      region: "{{ region }}"
+      image: "{{ ami_id }}"
+      wait: true
+      instance_type: "t2.micro"
+      vpc_subnet_id: "{{ vpc_pvt_subnet_1 }}"
+      instance_tags:
+        Name: "svaranasi_private_instance"
+      exact_count: 1
+      count_tag:
+        Name: "svaranasi_private_instance"
+      assign_public_ip: no
+    register: ec2
+
+  - name: Wait until SSH is available
+    local_action:
+      module: wait_for
+      host: "{{ item.private_ip }}"
+      port: 22
+      delay: 10
+      timeout: 180
+      search_regex: OpenSSH
+    with_items: ec2.instances
